@@ -1,0 +1,18 @@
+# render.yaml – Render.com deployment configuration
+# https://render.com/docs/yaml-spec
+
+services:
+  - type: web
+    name: venuevault
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: MONGODB_URI
+        sync: false          # Set in Render dashboard – your Atlas URI
+      - key: SESSION_SECRET
+        generateValue: true  # Render will auto-generate a secure secret

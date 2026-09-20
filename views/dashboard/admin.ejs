@@ -1,0 +1,337 @@
+<%- include('../partials/header', { title: 'Admin Dashboard' }) %>
+  <%- include('../partials/flash-messages') %>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <div class="flex min-h-[calc(100vh-4rem)]">
+      <%- include('../partials/sidebar', { activePage: 'admin-dash' }) %>
+
+        <div class="flex-1 overflow-auto bg-slate-50 p-6 lg:p-8">
+
+          <!-- Page header -->
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h1 class="text-2xl font-bold text-slate-900">Admin Dashboard</h1>
+              <p class="text-slate-500 text-sm mt-1">Manage venues, review bookings, and track revenue</p>
+            </div>
+            <a href="/admin/venues/new"
+              class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold px-4 py-2.5 rounded-xl transition-all active:scale-95 shadow-sm">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+              </svg>
+              Add Venue
+            </a>
+          </div>
+
+          <!-- ─── Stats Cards ──────────────────────────────────────── -->
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Total Venues</p>
+              <p class="text-3xl font-bold text-slate-900">
+                <%= (venues || []).length %>
+              </p>
+              <p class="text-xs text-slate-400 mt-1">
+                <%= (venues || []).filter(v=> v.status === 'Active').length %> active
+              </p>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Total Bookings</p>
+              <p class="text-3xl font-bold text-slate-900">
+                <%= (bookings || []).length %>
+              </p>
+              <p class="text-xs text-amber-600 mt-1">
+                <%= (pendingBookings || []).length %> pending review
+              </p>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Total Revenue</p>
+              <p class="text-3xl font-bold text-slate-900">₹<%= (totalRevenue || 0).toLocaleString() %>
+              </p>
+              <p class="text-xs text-emerald-600 mt-1">from paid bookings</p>
+            </div>
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wide mb-3">Organisers</p>
+              <p class="text-3xl font-bold text-slate-900">
+                <%= (users || []).filter(u=> u.role === 'Organiser').length %>
+              </p>
+              <p class="text-xs text-slate-400 mt-1">
+                <%= (users || []).length %> total users
+              </p>
+            </div>
+          </div>
+
+          <div class="grid lg:grid-cols-5 gap-6 mb-6">
+            <!-- ─── Revenue Chart ──────────────────────────────────── -->
+            <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+              <div class="flex items-center justify-between mb-5">
+                <h2 class="font-semibold text-slate-900">Revenue Overview</h2>
+                <span class="text-xs text-slate-400">Last 6 months</span>
+              </div>
+              <canvas id="revenue-chart" height="160"></canvas>
+            </div>
+
+            <!-- ─── Booking Status Donut ───────────────────────────── -->
+            <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-card p-6">
+              <h2 class="font-semibold text-slate-900 mb-5">Booking Status</h2>
+              <canvas id="status-chart" height="160"></canvas>
+              <div class="mt-4 space-y-2">
+                <% var pending=(bookings || []).filter(function(b){ return b.bookingStatus==='Pending' ; }).length; %>
+                  <% var approved=(bookings || []).filter(function(b){ return b.bookingStatus==='Approved' ; }).length;
+                    %>
+                    <% var rejected=(bookings || []).filter(function(b){ return b.bookingStatus==='Rejected' ;
+                      }).length; %>
+                      <% var completed=(bookings || []).filter(function(b){ return b.bookingStatus==='Completed' ;
+                        }).length; %>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="flex items-center gap-2"><span
+                              class="w-2 h-2 rounded-full bg-amber-400"></span>Pending</span>
+                          <span class="font-semibold text-slate-700">
+                            <%= pending %>
+                          </span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="flex items-center gap-2"><span
+                              class="w-2 h-2 rounded-full bg-emerald-500"></span>Approved</span>
+                          <span class="font-semibold text-slate-700">
+                            <%= approved %>
+                          </span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="flex items-center gap-2"><span
+                              class="w-2 h-2 rounded-full bg-rose-500"></span>Rejected</span>
+                          <span class="font-semibold text-slate-700">
+                            <%= rejected %>
+                          </span>
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                          <span class="flex items-center gap-2"><span
+                              class="w-2 h-2 rounded-full bg-slate-400"></span>Completed</span>
+                          <span class="font-semibold text-slate-700">
+                            <%= completed %>
+                          </span>
+                        </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ─── Pending Bookings ─────────────────────────────────── -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-card mb-6">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h2 class="font-semibold text-slate-900">Pending Approval</h2>
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-medium bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full">
+                  <%= (pendingBookings || []).length %> pending
+                </span>
+                <a href="/admin/bookings" class="text-xs text-indigo-600 font-semibold hover:underline">View All →</a>
+              </div>
+            </div>
+
+            <% if (!(pendingBookings || []).length) { %>
+              <div class="text-center py-10">
+                <p class="text-sm text-slate-400">No pending bookings — you're all caught up! 🎉</p>
+              </div>
+              <% } else { %>
+                <div class="divide-y divide-slate-50">
+                  <% (pendingBookings || []).slice(0, 5).forEach(b=> { %>
+                    <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+                      <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-slate-900 truncate">
+                          <%= b.eventName %>
+                        </p>
+                        <p class="text-xs text-slate-500 mt-0.5">
+                          By <strong>
+                            <%= b.organiserId ? b.organiserId.name : '—' %>
+                          </strong> ·
+                          <% if (b.venueId) { %>
+                            <%= b.venueId.name %> · <% } %>
+                                <%= new Date(b.startTime).toLocaleDateString('en-IN', { day:'numeric', month:'short',
+                                  year:'numeric' }) %>
+                                  <%= new Date(b.startTime).toLocaleTimeString('en-IN', { hour:'2-digit',
+                                    minute:'2-digit' }) %>
+                                    – <%= new Date(b.endTime).toLocaleTimeString('en-IN', { hour:'2-digit',
+                                      minute:'2-digit' }) %>
+                        </p>
+                      </div>
+                      <div class="flex items-center gap-2 shrink-0">
+                        <span class="text-sm font-bold text-slate-900">₹<%= b.totalAmount.toLocaleString() %></span>
+                        <form action="/admin/bookings/<%= b._id %>/approve?_method=PUT" method="POST">
+                          <button type="submit"
+                            class="text-xs bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-3 py-1.5 rounded-lg transition-all active:scale-95">
+                            Approve
+                          </button>
+                        </form>
+                        <form action="/admin/bookings/<%= b._id %>/reject?_method=PUT" method="POST">
+                          <button type="submit"
+                            class="text-xs bg-rose-500 hover:bg-rose-600 text-white font-semibold px-3 py-1.5 rounded-lg transition-all active:scale-95">
+                            Reject
+                          </button>
+                        </form>
+                      </div>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } %>
+          </div>
+
+          <!-- ─── Recent Venues ────────────────────────────────────── -->
+          <div class="bg-white rounded-2xl border border-slate-100 shadow-card">
+            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+              <h2 class="font-semibold text-slate-900">Venues</h2>
+              <a href="/admin/venues" class="text-xs text-indigo-600 font-semibold hover:underline">Manage All →</a>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead class="bg-slate-50 border-b border-slate-100">
+                  <tr>
+                    <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Name
+                    </th>
+                    <th
+                      class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">
+                      Location</th>
+                    <th class="text-right px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                      Capacity</th>
+                    <th class="text-right px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                      Price/hr</th>
+                    <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">
+                      Status</th>
+                    <th class="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                  <% (venues || []).slice(0, 5).forEach(v=> { %>
+                    <tr class="hover:bg-slate-50/50 transition-colors">
+                      <td class="px-6 py-3.5 font-medium text-slate-900">
+                        <%= v.name %>
+                      </td>
+                      <td class="px-4 py-3.5 text-slate-500 hidden md:table-cell">
+                        <%= v.location %>
+                      </td>
+                      <td class="px-4 py-3.5 text-right text-slate-700">
+                        <%= v.capacity.toLocaleString() %>
+                      </td>
+                      <td class="px-4 py-3.5 text-right font-semibold text-slate-900">₹<%=
+                          v.pricePerHour.toLocaleString() %>
+                      </td>
+                      <td class="px-4 py-3.5 text-center">
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full
+                    <%= v.status === 'Active' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700' %>">
+                          <%= v.status %>
+                        </span>
+                      </td>
+                      <td class="px-4 py-3.5 text-right">
+                        <a href="/admin/venues/<%= v._id %>/edit"
+                          class="text-xs text-indigo-600 hover:text-indigo-800 font-semibold mr-3 transition-colors">Edit</a>
+                        <form action="/admin/venues/<%= v._id %>?_method=DELETE" method="POST" class="inline"
+                          onsubmit="return confirm('Delete this venue?')">
+                          <button type="submit"
+                            class="text-xs text-rose-500 hover:text-rose-700 font-semibold transition-colors">Delete</button>
+                        </form>
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+    </div>
+
+    <script id="monthly-revenue-data" type="application/json">
+    <%- JSON.stringify(monthlyRevenue || { labels: [], data: [] }) %>
+    </script>
+    <script id="status-counts-data" type="application/json">
+    <%- JSON.stringify({
+      pending: typeof pending !== 'undefined' ? pending : 0,
+      approved: typeof approved !== 'undefined' ? approved : 0,
+      rejected: typeof rejected !== 'undefined' ? rejected : 0,
+      completed: typeof completed !== 'undefined' ? completed : 0
+    }) %>
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        /* ── Revenue Bar Chart ───────────────────────────────────── */
+        let monthlyData = { labels: [], data: [] };
+        const revDataEl = document.getElementById('monthly-revenue-data');
+        if (revDataEl && revDataEl.textContent.trim()) {
+          try {
+            monthlyData = JSON.parse(revDataEl.textContent);
+          } catch (e) {
+            monthlyData = { labels: [], data: [] };
+          }
+        }
+
+        const revChartCanvas = document.getElementById('revenue-chart');
+        if (revChartCanvas && typeof Chart !== 'undefined') {
+          new Chart(revChartCanvas, {
+            type: 'bar',
+            data: {
+              labels: monthlyData.labels || [],
+              datasets: [{
+                label: 'Revenue (₹)',
+                data: monthlyData.data || [],
+                backgroundColor: 'rgba(79,70,229,0.15)',
+                borderColor: '#4f46e5',
+                borderWidth: 2,
+                borderRadius: 8,
+                borderSkipped: false,
+                hoverBackgroundColor: 'rgba(79,70,229,0.3)'
+              }]
+            },
+            options: {
+              responsive: true,
+              plugins: { legend: { display: false } },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  grid: { color: 'rgba(0,0,0,0.04)' },
+                  ticks: { callback: function (v) { return '₹' + v.toLocaleString(); } }
+                },
+                x: { grid: { display: false } }
+              }
+            }
+          });
+        }
+
+        /* ── Booking Status Donut ────────────────────────────────── */
+        let statusData = { pending: 0, approved: 0, rejected: 0, completed: 0 };
+        const statusDataEl = document.getElementById('status-counts-data');
+        if (statusDataEl && statusDataEl.textContent.trim()) {
+          try {
+            statusData = JSON.parse(statusDataEl.textContent);
+          } catch (e) {
+            statusData = { pending: 0, approved: 0, rejected: 0, completed: 0 };
+          }
+        }
+
+        const statusChartCanvas = document.getElementById('status-chart');
+        if (statusChartCanvas && typeof Chart !== 'undefined') {
+          new Chart(statusChartCanvas, {
+            type: 'doughnut',
+            data: {
+              labels: ['Pending', 'Approved', 'Rejected', 'Completed'],
+              datasets: [{
+                data: [
+                  statusData.pending || 0,
+                  statusData.approved || 0,
+                  statusData.rejected || 0,
+                  statusData.completed || 0
+                ],
+                backgroundColor: ['#f59e0b', '#10b981', '#f43f5e', '#94a3b8'],
+                borderWidth: 0,
+                hoverOffset: 4
+              }]
+            },
+            options: {
+              responsive: true,
+              cutout: '70%',
+              plugins: { legend: { display: false } }
+            }
+          });
+        }
+      });
+    </script>
+
+    <%- include('../partials/footer') %>

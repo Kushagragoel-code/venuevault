@@ -1,0 +1,199 @@
+<%- include('../partials/header', { title: 'My Dashboard' }) %>
+<%- include('../partials/flash-messages') %>
+
+<div class="flex min-h-[calc(100vh-4rem)]">
+  <%- include('../partials/sidebar', { activePage: 'dashboard' }) %>
+
+  <!-- Main content -->
+  <div class="flex-1 overflow-auto bg-slate-50 p-6 lg:p-8">
+
+    <!-- Page header -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-slate-900">My Dashboard</h1>
+      <p class="text-slate-500 text-sm mt-1">Track your bookings, spending, and upcoming events</p>
+    </div>
+
+    <!-- ─── Stats Cards ──────────────────────────────────────── -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Total Bookings</p>
+          <div class="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center">
+            <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-slate-900"><%= (bookings || []).length %></p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Upcoming</p>
+          <div class="w-8 h-8 rounded-lg bg-emerald-50 flex items-center justify-center">
+            <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-slate-900"><%= (upcoming || []).length %></p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Completed</p>
+          <div class="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center">
+            <svg class="w-4 h-4 text-violet-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-slate-900"><%= (past || []).length %></p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-card p-5">
+        <div class="flex items-center justify-between mb-3">
+          <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Total Spent</p>
+          <div class="w-8 h-8 rounded-lg bg-amber-50 flex items-center justify-center">
+            <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-2xl font-bold text-slate-900">₹<%= totalSpent.toLocaleString() %></p>
+      </div>
+    </div>
+
+    <!-- ─── Upcoming Bookings ────────────────────────────────── -->
+    <% if ((upcoming || []).length > 0) { %>
+      <div class="bg-white rounded-2xl border border-slate-100 shadow-card mb-6">
+        <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+          <h2 class="font-semibold text-slate-900">Upcoming Bookings</h2>
+          <span class="text-xs font-medium bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-full"><%= (upcoming || []).length %></span>
+        </div>
+        <div class="divide-y divide-slate-50">
+          <% upcoming.forEach(b => { %>
+            <div class="px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3">
+              <div class="flex-1 min-w-0">
+                <p class="font-semibold text-slate-900 truncate"><%= b.eventName %></p>
+                <p class="text-sm text-slate-500 truncate">
+                  <% if (b.venueId) { %><%= b.venueId.name %> • <% } %>
+                  <%= new Date(b.startTime).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %>
+                  <%= new Date(b.startTime).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) %> –
+                  <%= new Date(b.endTime).toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' }) %>
+                </p>
+              </div>
+              <div class="flex items-center gap-3 shrink-0">
+                <span class="text-sm font-semibold text-slate-900">₹<%= b.totalAmount.toLocaleString() %></span>
+                <span class="text-xs font-semibold px-2.5 py-1 rounded-full
+                  <%= b.bookingStatus === 'Approved' ? 'bg-emerald-50 text-emerald-700' :
+                     b.bookingStatus === 'Pending'   ? 'bg-amber-50 text-amber-700'   :
+                                                       'bg-rose-50 text-rose-700' %>">
+                  <%= b.bookingStatus %>
+                </span>
+                <!-- Pay button (approved + unpaid) -->
+                <% if (b.bookingStatus === 'Approved' && b.paymentStatus === 'Pending') { %>
+                  <form action="/bookings/<%= b._id %>/pay" method="POST">
+                    <button type="submit"
+                            class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-3 py-1.5 rounded-lg transition-all active:scale-95">
+                      Pay Now
+                    </button>
+                  </form>
+                <% } else if (b.paymentStatus === 'Paid') { %>
+                  <span class="text-xs font-medium text-emerald-600 flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+                    Paid
+                  </span>
+                <% } %>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    <% } %>
+
+    <!-- ─── All Bookings Table ───────────────────────────────── -->
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-card">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h2 class="font-semibold text-slate-900">All Bookings</h2>
+        <a href="/venues"
+           class="text-xs font-semibold text-indigo-600 hover:text-indigo-800 transition-colors flex items-center gap-1">
+          Book New Venue
+          <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+        </a>
+      </div>
+      <% if ((bookings || []).length === 0) { %>
+        <div class="text-center py-16">
+          <div class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center mx-auto mb-3">
+            <svg class="w-7 h-7 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+            </svg>
+          </div>
+          <h3 class="text-sm font-semibold text-slate-700 mb-1">No bookings yet</h3>
+          <p class="text-xs text-slate-400 mb-4">Browse our venues and make your first booking.</p>
+          <a href="/venues" class="inline-block bg-indigo-600 text-white text-xs font-semibold px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors">
+            Browse Venues
+          </a>
+        </div>
+      <% } else { %>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="bg-slate-50 border-b border-slate-100">
+              <tr>
+                <th class="text-left px-6 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Event</th>
+                <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden md:table-cell">Venue</th>
+                <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide hidden lg:table-cell">Date</th>
+                <th class="text-right px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Amount</th>
+                <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
+                <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Payment</th>
+                <th class="px-4 py-3"></th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+              <% bookings.forEach(b => { %>
+                <tr class="hover:bg-slate-50/50 transition-colors">
+                  <td class="px-6 py-4 font-medium text-slate-900 truncate max-w-[180px]"><%= b.eventName %></td>
+                  <td class="px-4 py-4 text-slate-500 hidden md:table-cell truncate max-w-[140px]">
+                    <%= b.venueId ? b.venueId.name : '—' %>
+                  </td>
+                  <td class="px-4 py-4 text-slate-500 hidden lg:table-cell whitespace-nowrap">
+                    <%= new Date(b.startTime).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' }) %>
+                  </td>
+                  <td class="px-4 py-4 text-right font-semibold text-slate-900 whitespace-nowrap">₹<%= b.totalAmount.toLocaleString() %></td>
+                  <td class="px-4 py-4 text-center">
+                    <span class="text-xs font-semibold px-2.5 py-1 rounded-full
+                      <%= b.bookingStatus === 'Approved'  ? 'bg-emerald-50 text-emerald-700' :
+                         b.bookingStatus === 'Pending'    ? 'bg-amber-50 text-amber-700'    :
+                         b.bookingStatus === 'Completed'  ? 'bg-slate-100 text-slate-600'   :
+                                                            'bg-rose-50 text-rose-700' %>">
+                      <%= b.bookingStatus %>
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 text-center">
+                    <span class="text-xs font-medium
+                      <%= b.paymentStatus === 'Paid' ? 'text-emerald-600' : 'text-amber-600' %>">
+                      <%= b.paymentStatus %>
+                    </span>
+                  </td>
+                  <td class="px-4 py-4 text-right">
+                    <% if (b.bookingStatus === 'Approved' && b.paymentStatus === 'Pending') { %>
+                      <form action="/bookings/<%= b._id %>/pay" method="POST">
+                        <button type="submit"
+                                class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white font-semibold px-3 py-1.5 rounded-lg transition-all">
+                          Pay
+                        </button>
+                      </form>
+                    <% } %>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+
+  </div>
+</div>
+
+<%- include('../partials/footer') %>

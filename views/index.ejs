@@ -1,0 +1,205 @@
+<%- include('partials/header', { title: 'VenueVault – Find & Book Premium Event Venues' }) %>
+<%- include('partials/flash-messages') %>
+
+<!-- ─── Hero ──────────────────────────────────────────────────── -->
+<section class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 pt-20 pb-28">
+  <!-- Background decoration -->
+  <div class="absolute inset-0 opacity-20">
+    <div class="absolute top-10 left-10 w-72 h-72 bg-indigo-500 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-10 w-96 h-96 bg-violet-500 rounded-full blur-3xl"></div>
+  </div>
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-sm text-indigo-200 font-medium mb-6">
+      <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+      500+ Premium Venues Available
+    </div>
+    <h1 class="text-5xl sm:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-[1.07] mb-6">
+      Find & Book<br/>
+      <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-violet-400">
+        Premium Venues
+      </span>
+    </h1>
+    <p class="text-lg sm:text-xl text-slate-300 max-w-2xl mx-auto mb-10 leading-relaxed">
+      Discover curated event spaces for conferences, weddings, and celebrations.
+      Real-time availability, instant booking requests, seamless management.
+    </p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <a href="/venues"
+         class="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-7 py-3.5 rounded-xl shadow-lg shadow-indigo-900/40 transition-all active:scale-95">
+        Explore Venues
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+        </svg>
+      </a>
+      <% if (!currentUser) { %>
+        <a href="/register"
+           class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold px-7 py-3.5 rounded-xl transition-all active:scale-95">
+          Create Free Account
+        </a>
+      <% } else { %>
+        <a href="<%= currentUser.role === 'Admin' ? '/admin' : '/dashboard' %>"
+           class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/25 text-white font-semibold px-7 py-3.5 rounded-xl transition-all active:scale-95">
+          Go to Dashboard
+        </a>
+      <% } %>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Stats Bar ─────────────────────────────────────────────── -->
+<section class="bg-white border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+      <div>
+        <p class="text-3xl font-bold text-slate-900">500+</p>
+        <p class="text-sm text-slate-500 mt-1">Active Venues</p>
+      </div>
+      <div>
+        <p class="text-3xl font-bold text-slate-900">12K+</p>
+        <p class="text-sm text-slate-500 mt-1">Events Hosted</p>
+      </div>
+      <div>
+        <p class="text-3xl font-bold text-slate-900">98%</p>
+        <p class="text-sm text-slate-500 mt-1">Satisfaction Rate</p>
+      </div>
+      <div>
+        <p class="text-3xl font-bold text-slate-900">24/7</p>
+        <p class="text-sm text-slate-500 mt-1">Support Available</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── How It Works ──────────────────────────────────────────── -->
+<section class="py-20 bg-slate-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-3">How VenueVault Works</h2>
+      <p class="text-slate-500 text-lg max-w-xl mx-auto">From discovery to confirmed booking in three simple steps.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="text-center group">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-5 text-2xl font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+          1
+        </div>
+        <h3 class="text-lg font-semibold text-slate-900 mb-2">Search & Filter</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Browse our curated collection of premium venues. Filter by capacity, amenities, and location to find the perfect match.</p>
+      </div>
+      <div class="text-center group">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-5 text-2xl font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+          2
+        </div>
+        <h3 class="text-lg font-semibold text-slate-900 mb-2">Check Availability</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">View real-time availability on an interactive calendar. Pick your date and time with confidence — no double bookings ever.</p>
+      </div>
+      <div class="text-center group">
+        <div class="w-16 h-16 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto mb-5 text-2xl font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 shadow-sm">
+          3
+        </div>
+        <h3 class="text-lg font-semibold text-slate-900 mb-2">Confirm & Pay</h3>
+        <p class="text-slate-500 text-sm leading-relaxed">Submit your booking request instantly. Once approved by the venue admin, pay securely and your spot is locked in.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Featured Venues ───────────────────────────────────────── -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between mb-10">
+      <div>
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-900">Featured Venues</h2>
+        <p class="text-slate-500 mt-2">Hand-picked spaces for every occasion</p>
+      </div>
+      <a href="/venues"
+         class="hidden sm:inline-flex items-center gap-1 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+        View all
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Static featured cards (seed data will populate real ones) -->
+      <% const featured = [
+        { img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80', name: 'The Grand Conference Hall', loc: 'Downtown Manhattan', cap: 500, price: 800 },
+        { img: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80', name: 'Skyline Rooftop Terrace', loc: 'Brooklyn Heights', cap: 200, price: 450 },
+        { img: 'https://images.unsplash.com/photo-1478147427282-58a87a433b2a?w=800&q=80', name: 'Crystal Ballroom', loc: 'Midtown NYC', cap: 350, price: 650 }
+      ]; %>
+      <% featured.forEach(v => { %>
+        <div class="group bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-0.5">
+          <div class="relative h-48 overflow-hidden">
+            <img src="<%= v.img %>" alt="<%= v.name %>"
+                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+            <span class="absolute top-3 right-3 bg-emerald-500 text-white text-xs font-semibold px-2.5 py-1 rounded-full">Available</span>
+          </div>
+          <div class="p-5">
+            <h3 class="text-base font-semibold text-slate-900 truncate"><%= v.name %></h3>
+            <p class="text-sm text-slate-500 flex items-center gap-1 mt-1">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+              </svg>
+              <%= v.loc %>
+            </p>
+            <div class="flex items-center justify-between mt-4">
+              <div>
+                <span class="text-xs text-slate-400">up to</span>
+                <span class="text-sm font-semibold text-slate-700 ml-1"><%= v.cap %> guests</span>
+              </div>
+              <span class="text-lg font-bold text-indigo-600">$<%= v.price %><span class="text-sm font-normal text-slate-400">/hr</span></span>
+            </div>
+            <a href="/venues"
+               class="mt-4 block w-full text-center bg-indigo-50 hover:bg-indigo-600 text-indigo-600 hover:text-white text-sm font-semibold py-2.5 rounded-lg transition-all duration-200">
+              View Details
+            </a>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA Banner ────────────────────────────────────────────── -->
+<section class="py-20 bg-gradient-to-r from-indigo-600 to-violet-600">
+  <div class="max-w-3xl mx-auto px-4 text-center">
+    <h2 class="text-3xl sm:text-4xl font-bold text-white mb-4">Ready to host an unforgettable event?</h2>
+    <p class="text-indigo-200 text-lg mb-8">Join thousands of event organisers who trust VenueVault.</p>
+    <div class="flex flex-wrap gap-4 justify-center">
+      <a href="/register"
+         class="bg-white text-indigo-700 font-bold px-7 py-3.5 rounded-xl hover:bg-indigo-50 transition-all shadow-lg active:scale-95">
+        Start for Free
+      </a>
+      <a href="/venues"
+         class="border-2 border-white/50 text-white font-semibold px-7 py-3.5 rounded-xl hover:border-white transition-all active:scale-95">
+        Browse Venues
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Footer ────────────────────────────────────────────────── -->
+<footer class="bg-slate-900 text-slate-400 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center">
+          <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/>
+          </svg>
+        </div>
+        <span class="text-white font-semibold">VenueVault</span>
+      </div>
+      <p class="text-sm">&copy; <%= new Date().getFullYear() %> VenueVault. Built for seamless event management.</p>
+      <div class="flex gap-5 text-sm">
+        <a href="/venues" class="hover:text-white transition-colors">Browse</a>
+        <a href="/login"  class="hover:text-white transition-colors">Login</a>
+        <a href="/register" class="hover:text-white transition-colors">Register</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<%- include('partials/footer') %>

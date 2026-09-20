@@ -1,0 +1,122 @@
+<%- include('../partials/header', { title: 'Sign In' }) %>
+<%- include('../partials/flash-messages') %>
+
+<div class="min-h-[calc(100vh-4rem)] flex">
+  <!-- Left brand panel -->
+  <div class="hidden lg:flex w-1/2 bg-gradient-to-br from-indigo-700 via-indigo-600 to-violet-600 flex-col justify-between p-12 relative overflow-hidden">
+    <div class="absolute inset-0 opacity-10">
+      <div class="absolute top-20 left-20 w-64 h-64 rounded-full bg-white blur-3xl"></div>
+      <div class="absolute bottom-20 right-20 w-80 h-80 rounded-full bg-violet-300 blur-3xl"></div>
+    </div>
+    <div class="relative">
+      <a href="/" class="flex items-center gap-2.5">
+        <div class="w-9 h-9 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5"/>
+          </svg>
+        </div>
+        <span class="text-xl font-bold text-white">VenueVault</span>
+      </a>
+    </div>
+    <div class="relative">
+      <h2 class="text-4xl font-bold text-white leading-tight mb-4">
+        Welcome back<br/>to VenueVault
+      </h2>
+      <p class="text-indigo-200 text-lg leading-relaxed mb-8">
+        Your gateway to premium event venues. Manage bookings, track approvals, and plan unforgettable experiences.
+      </p>
+      <div class="flex flex-col gap-3">
+        <div class="flex items-center gap-3 text-indigo-100">
+          <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <span class="text-sm">Real-time availability calendar</span>
+        </div>
+        <div class="flex items-center gap-3 text-indigo-100">
+          <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <span class="text-sm">Instant booking requests</span>
+        </div>
+        <div class="flex items-center gap-3 text-indigo-100">
+          <div class="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center shrink-0">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <span class="text-sm">Secure, seamless payments</span>
+        </div>
+      </div>
+    </div>
+    <p class="relative text-indigo-300 text-xs">&copy; <%= new Date().getFullYear() %> VenueVault</p>
+  </div>
+
+  <!-- Right login form -->
+  <div class="flex-1 flex items-center justify-center p-6 bg-slate-50">
+    <div class="w-full max-w-md">
+      <div class="mb-8">
+        <h1 class="text-2xl font-bold text-slate-900 mb-1.5">Sign in to your account</h1>
+        <p class="text-slate-500 text-sm">Don't have an account?
+          <a href="/register" class="text-indigo-600 font-semibold hover:underline">Create one free</a>
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-card p-8">
+        <form action="/login" method="POST" class="space-y-5" id="login-form">
+          <!-- Email -->
+          <div>
+            <label for="email" class="block text-sm font-medium text-slate-700 mb-1.5">Email address</label>
+            <input type="email" id="email" name="email" required
+                   placeholder="you@example.com"
+                   class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-slate-900 text-sm
+                          placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-colors" />
+          </div>
+
+          <!-- Password -->
+          <div>
+            <label for="password" class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
+            <div class="relative">
+              <input type="password" id="password" name="password" required
+                     placeholder="••••••••"
+                     class="w-full px-4 py-2.5 rounded-lg border border-slate-300 text-slate-900 text-sm
+                            placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition-colors" />
+              <button type="button" id="toggle-password"
+                      class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit -->
+          <button type="submit" id="login-btn"
+                  class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2.5 rounded-lg transition-all active:scale-95 shadow-sm text-sm">
+            Sign In
+          </button>
+        </form>
+      </div>
+
+      <!-- Demo credentials hint -->
+      <div class="mt-5 p-4 bg-indigo-50 border border-indigo-100 rounded-xl text-xs text-indigo-700">
+        <p class="font-semibold mb-1">🔑 Demo Credentials</p>
+        <p><strong>Admin:</strong> admin@venuevault.com / Admin@123</p>
+        <p><strong>Organiser:</strong> organiser@venuevault.com / Organiser@123</p>
+        <p class="text-indigo-500 mt-1">Run <code class="bg-indigo-100 px-1 rounded">node scripts/seed.js</code> to create demo accounts.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('toggle-password').addEventListener('click', function () {
+    const pw = document.getElementById('password');
+    pw.type = pw.type === 'password' ? 'text' : 'password';
+  });
+  document.getElementById('login-form').addEventListener('submit', function () {
+    const btn = document.getElementById('login-btn');
+    btn.textContent = 'Signing in…';
+    btn.disabled = true;
+  });
+</script>
+
+<%- include('../partials/footer') %>

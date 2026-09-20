@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= typeof title !== 'undefined' ? title + ' | VenueVault' : 'VenueVault' %></title>
+  <meta name="description" content="VenueVault – Discover and book premium event venues for conferences, weddings, and celebrations." />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            primary  : { DEFAULT: '#4f46e5', 50:'#eef2ff', 100:'#e0e7ff', 600:'#4f46e5', 700:'#4338ca', 800:'#3730a3' },
+            slate    : { 50:'#f8fafc', 100:'#f1f5f9', 200:'#e2e8f0', 500:'#64748b', 600:'#475569', 700:'#334155', 900:'#0f172a' },
+            emerald  : { 50:'#ecfdf5', 500:'#10b981' },
+            amber    : { 50:'#fffbeb', 500:'#f59e0b' },
+            rose     : { 50:'#fff1f2', 500:'#f43f5e' }
+          },
+          boxShadow: {
+            'card' : '0 1px 3px 0 rgb(0 0 0 / .05), 0 1px 2px -1px rgb(0 0 0 / .05)',
+            'card-hover': '0 10px 15px -3px rgb(0 0 0 / .07), 0 4px 6px -4px rgb(0 0 0 / .07)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body class="bg-slate-50 font-sans antialiased text-slate-900 min-h-screen">
+
+<!-- ─── Sticky Glass Navbar ───────────────────────────────────── -->
+<header class="fixed top-0 inset-x-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2.5 shrink-0">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center shadow-sm">
+          <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
+          </svg>
+        </div>
+        <span class="text-xl font-bold text-slate-900 tracking-tight">VenueVault</span>
+      </a>
+
+      <!-- Desktop nav links -->
+      <nav class="hidden md:flex items-center gap-7">
+        <a href="/venues" class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Browse Venues</a>
+        <% if (currentUser) { %>
+          <% if (currentUser.role === 'Admin') { %>
+            <a href="/admin"           class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Admin Panel</a>
+            <a href="/admin/venues"    class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Venues</a>
+            <a href="/admin/bookings"  class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Bookings</a>
+          <% } else { %>
+            <a href="/dashboard" class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">Dashboard</a>
+          <% } %>
+        <% } %>
+      </nav>
+
+      <!-- Right-side auth -->
+      <div class="hidden md:flex items-center gap-3">
+        <% if (currentUser) { %>
+          <div class="flex items-center gap-3">
+            <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1.5">
+              <div class="w-6 h-6 rounded-full bg-indigo-600 flex items-center justify-center">
+                <span class="text-white text-xs font-bold"><%= currentUser.name.charAt(0).toUpperCase() %></span>
+              </div>
+              <span class="text-sm font-medium text-slate-700"><%= currentUser.name %></span>
+              <span class="text-xs px-1.5 py-0.5 rounded-full font-medium
+                <%= currentUser.role === 'Admin' ? 'bg-indigo-100 text-indigo-700' : 'bg-emerald-50 text-emerald-700' %>">
+                <%= currentUser.role %>
+              </span>
+            </div>
+            <a href="/logout"
+               class="text-sm font-medium text-slate-500 hover:text-rose-500 transition-colors">
+              Logout
+            </a>
+          </div>
+        <% } else { %>
+          <a href="/login"
+             class="text-sm font-medium text-slate-600 hover:text-indigo-600 transition-colors">
+            Sign in
+          </a>
+          <a href="/register"
+             class="text-sm font-semibold bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 active:scale-95 transition-all shadow-sm">
+            Get Started
+          </a>
+        <% } %>
+      </div>
+
+      <!-- Mobile menu toggle -->
+      <button id="mobile-menu-btn"
+              class="md:hidden p-2 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors"
+              aria-label="Toggle menu">
+        <svg id="menu-icon-open"  class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+        <svg id="menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-slate-100 bg-white/95 backdrop-blur-md">
+    <div class="px-4 py-3 space-y-1">
+      <a href="/venues" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Browse Venues</a>
+      <% if (currentUser) { %>
+        <% if (currentUser.role === 'Admin') { %>
+          <a href="/admin"          class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Admin Dashboard</a>
+          <a href="/admin/venues"   class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Manage Venues</a>
+          <a href="/admin/bookings" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Manage Bookings</a>
+        <% } else { %>
+          <a href="/dashboard" class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Dashboard</a>
+        <% } %>
+        <a href="/logout" class="block px-3 py-2 rounded-lg text-sm font-medium text-rose-500 hover:bg-rose-50">Logout</a>
+      <% } else { %>
+        <a href="/login"    class="block px-3 py-2 rounded-lg text-sm font-medium text-slate-700 hover:bg-slate-50">Sign In</a>
+        <a href="/register" class="block px-3 py-2 rounded-lg text-sm font-semibold text-indigo-600 hover:bg-indigo-50">Get Started →</a>
+      <% } %>
+    </div>
+  </div>
+</header>
+
+<!-- Push content below fixed navbar -->
+<div class="h-16"></div>
+
+<script>
+  (function () {
+    const btn   = document.getElementById('mobile-menu-btn');
+    const menu  = document.getElementById('mobile-menu');
+    const open  = document.getElementById('menu-icon-open');
+    const close = document.getElementById('menu-icon-close');
+    btn.addEventListener('click', () => {
+      const isHidden = menu.classList.toggle('hidden');
+      open.classList.toggle('hidden',  !isHidden);
+      close.classList.toggle('hidden', isHidden);
+    });
+  })();
+</script>
